@@ -1,11 +1,9 @@
 import { DatabaseProvider } from "../database";
 import { Customer } from "../model/customer";
+import { BaseService } from "./baseService";
 
-export class CustomerService {
-    public async getById(id: number): Promise<Customer> {
-        const connection = await DatabaseProvider.getConnection();
-        return await connection.getRepository(Customer).findOne(id);
-    }
+export class CustomerService extends BaseService<Customer>{
+
 
     public async create(customer: Customer): Promise<Customer> {
         const connection = await DatabaseProvider.getConnection();

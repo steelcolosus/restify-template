@@ -3,6 +3,7 @@ import { HttpServer } from "../server/httpServer";
 import { customerService } from "../services/customer";
 import { Request, Response } from 'restify';
 
+
 export class CustomerController implements Controller {
 
     initialize(httpServer: HttpServer): void {
