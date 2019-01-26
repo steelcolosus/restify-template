@@ -1,0 +1,12 @@
+version: '3'
+services:
+    db:
+      container_name: postgres
+      image: postgres
+      restart: always
+      environment:
+        POSTGRES_PASSWORD: restify
+        POSTGRES_USER: restify
+      ports:
+        - "5432:5432"
+        # (HOST:CONTAINER)
