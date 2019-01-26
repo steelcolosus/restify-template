@@ -1,8 +1,12 @@
-import { Controller } from "./controller";
 import { HttpServer } from "../server/httpServer";
+import { Request, Response } from 'restify';
+import { path, GET } from "../utils";
 
-export class PingController implements Controller {
-    initialize(httpServer: HttpServer): void {
-        httpServer.get('ping', (req, res) => res.send(200, 'hello'));
+@path('/ping')
+export class PingController {
+
+    @GET
+    private async ping(req: Request, res: Response): Promise<void> {
+        res.send(200, 'hello');
     }
 }
