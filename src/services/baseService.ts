@@ -3,10 +3,7 @@ import { Repository, ObjectLiteral, ObjectType, DeepPartial } from "typeorm";
 
 export abstract class BaseService<T> {
 
-
-
     constructor(public clazz: new () => T) {
-
     }
 
     private async getRepository() {

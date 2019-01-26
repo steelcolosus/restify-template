@@ -47,12 +47,10 @@ export class ApiServer implements HttpServer {
         this.restify.use(restify.plugins.bodyParser());
         this.restify.use(restify.plugins.queryParser());
 
-        //CONTROLLERS.forEach(controller => controller.initialize(this));
         CONTROLLERS.forEach((resource) => {
             const { endpoints, basePath } = accessResource(resource.constructor);
             endpoints.forEach((endpoint) => {
-                const { http, methodName, methodPath, filters } = endpoint;
-
+                const { http, methodName, methodPath } = endpoint;
                 const completePath = path.join(basePath, methodPath || '').replace(/\\/g, '/');
                 const verb = this.httpToRestify[http];
                 const endpointMethod = resource[methodName];

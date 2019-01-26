@@ -1,7 +1,7 @@
 import { resource, endpoint } from '../access';
 
 export default function path(path) {
-    return (...args) => {
+    return (...args: any) => {
         if (args.length === 1) {
             return rootPath(path, args[0]);
         } else {
