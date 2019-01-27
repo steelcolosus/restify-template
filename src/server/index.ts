@@ -1,7 +1,7 @@
 import { HttpServer } from "./httpServer";
 import * as restify from 'restify';
 import { Server } from 'restify';
-import { CONTROLLERS } from "../controller";
+import { CONTROLLERS } from "../controllers";
 import { resource as accessResource, resource } from '../utils/access';
 import * as path from 'path';
 

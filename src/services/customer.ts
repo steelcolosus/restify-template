@@ -1,5 +1,5 @@
 import { DatabaseProvider } from "../database";
-import { Customer } from "../model/customer";
+import { Customer } from "../models/customer";
 import { BaseService } from "./baseService";
 
 export class CustomerService extends BaseService<Customer>{
