@@ -1,5 +1,4 @@
 import { Request, Response } from 'restify';
-import { GET } from '../utils';
 export abstract class BaseController {
 
 
