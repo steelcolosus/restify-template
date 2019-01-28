@@ -1,7 +1,8 @@
 import { DatabaseProvider } from "../database";
 import { Repository, ObjectLiteral, ObjectType, DeepPartial } from "typeorm";
+import { BaseEntity } from "../models/BaseEntity";
 
-export abstract class BaseService<T> {
+export abstract class BaseService<T extends BaseEntity> {
 
     constructor(public clazz: new () => T) {
     }
@@ -31,5 +32,9 @@ export abstract class BaseService<T> {
         return await repository.remove(customer) ? true : false;
     }
 
-    public abstract async update(entity: T): Promise<T>;
+    public async update(entity: T): Promise<T> {
+        let customer = await this.getById(entity.id);
+        Object.assign(customer, entity);
+        return await this.save(customer as any);
+    }
 }

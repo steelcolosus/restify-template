@@ -3,16 +3,35 @@ import * as restify from 'restify';
 import { Server } from 'restify';
 import * as path from 'path';
 import { DatabaseProvider, DatabaseConfiguration } from '../database';
+import { server } from 'spdy';
+
+export enum HttpMethod {
+  GET = 'GET',
+  POST = 'POST',
+  PUT = 'PUT',
+  DELETE = 'DELETE',
+  OPTIONS = 'OPTIONS',
+  HEAD = 'HEAD'
+}
+
+export interface CorsConfiguration {
+  preflightMaxAge?: number, // Optional
+  origins: any[],
+  allowMethods: HttpMethod[],
+  allowHeaders: string[],
+  exposeHeaders: string[]
+}
 
 export class ApiServer {
   private restify: Server;
-  private handlers: restify.RequestHandlerType[];
+  private handlers: restify.RequestHandlerType[] = [];
+  private preHandlers: restify.RequestHandlerType[] = [];
   private controllers: any[];
   private bodyParser: boolean;
   private queryParser: boolean;
   private port: number;
   private dbConfig: DatabaseConfiguration;
-
+  private corsConfig: CorsConfiguration;
 
   constructor(build) {
     this.dbConfig = build.dbConfig;
@@ -26,9 +45,21 @@ export class ApiServer {
 
     this.handlers = build.handlers;
 
+    if (this.corsConfig) {
+      const corsMiddleware = require('restify-cors-middleware');
+      const cors = corsMiddleware(this.corsConfig);
+      this.restify.pre(cors.pref)
+      this.restify.use(cors.actual);
+    }
+
+    if (this.handlers !== undefined && this.preHandlers.length > 0) {
+      this.restify.pre(...this.preHandlers);
+    }
+
     if (this.handlers !== undefined && this.handlers.length > 0) {
       this.restify.use(...this.handlers);
     }
+
     this.bodyParser = build.bodyParser;
     if (this.bodyParser) {
       this.restify.use(restify.plugins.bodyParser());
@@ -41,6 +72,8 @@ export class ApiServer {
     } else {
       console.log('you are not using any qjery parser');
     }
+
+
 
     this.controllers = build.controllers;
 
@@ -90,7 +123,10 @@ export class ApiServer {
       private queryParser: boolean;
       private controllers: any[];
       private handlers: restify.RequestHandlerType[];
+      private preHandlers: restify.RequestHandlerType[];
       private dbConfig: DatabaseConfiguration;
+      private corsConfig: CorsConfiguration;
+
       constructor(port: number) {
         this.port = port;
       }
@@ -107,13 +143,22 @@ export class ApiServer {
         this.controllers = resources;
         return this;
       }
-      withExtraHandlers(...requestHandlers: restify.RequestHandlerType[]) {
-        this.handlers = requestHandlers;
+      use(...requestHandlers: restify.RequestHandlerType[]) {
+        this.handlers.push(...requestHandlers);
+        return this;
+      }
+      pre(...requestHandlers: restify.RequestHandlerType[]) {
+        this.preHandlers.push(...requestHandlers);
         return this;
       }
 
       withDBConfig(config: DatabaseConfiguration) {
         this.dbConfig = config;
+        return this;
+      }
+
+      withCORS(corsConfig: CorsConfiguration) {
+        this.corsConfig = corsConfig;
         return this;
       }
 
