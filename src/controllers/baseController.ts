@@ -1,6 +1,8 @@
 import { Request, Response } from 'restify';
-export abstract class BaseController {
 
+
+
+export abstract class BaseController {    
 
     abstract async list(req: Request, res: Response): Promise<void>;
 

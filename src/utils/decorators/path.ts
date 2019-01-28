@@ -1,22 +1,14 @@
-import { resource, endpoint } from '../access';
-
 export default function path(path) {
-    return (...args: any) => {
-        if (args.length === 1) {
-            return rootPath(path, args[0]);
-        } else {
-            return endpointPath(path, args[0], args[1]);
-        }
-    };
+  return (...args: any) => {
+    if (args.length === 1) {
+      return rootPath(path, args[0]);
+    } else{
+        throw new Error('path decorator is a  class level annotation')
+    }
+  };
 }
-
 function rootPath(path, Resource) {
-    const resourceDescription = resource(Resource);
-    resourceDescription.basePath = path;
-    return Resource;
+  Resource.prototype.basePath = path;
+  return Resource;
 }
 
-function endpointPath(path, resourcePrototype, name) {
-    const endpointDescription = endpoint(resourcePrototype.constructor, name);
-    endpointDescription.methodPath = path;
-}

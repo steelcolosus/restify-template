@@ -1,7 +1,6 @@
 import { RequestHandler } from 'restify';
 import * as restify from 'restify';
 import { Server } from 'restify';
-import { resource as accessResource, resource } from '../utils/access';
 import * as path from 'path';
 import { DatabaseProvider, DatabaseConfiguration } from '../database';
 
@@ -13,13 +12,7 @@ export class ApiServer {
   private queryParser: boolean;
   private port: number;
   private dbConfig: DatabaseConfiguration;
-  private httpToRestify = {
-    HEAD: 'head',
-    GET: 'get',
-    POST: 'post',
-    PUT: 'put',
-    DELETE: 'del'
-  };
+
 
   constructor(build) {
     this.dbConfig = build.dbConfig;
@@ -55,15 +48,14 @@ export class ApiServer {
       console.log('No controllers detected');
     } else {
       this.controllers.forEach(resource => {
-        const { endpoints, basePath } = accessResource(resource.constructor);
+        const { endpoints, basePath } = resource;
         endpoints.forEach(endpoint => {
           const { http, methodName, methodPath } = endpoint;
           const completePath = path
             .join(basePath, methodPath || '')
             .replace(/\\/g, '/');
-          const verb = this.httpToRestify[http];
           const endpointMethod = resource[methodName];
-          this.addRoute(verb, completePath, endpointMethod.bind(resource));
+          this.addRoute(http, completePath, endpointMethod.bind(resource));
         });
       });
     }

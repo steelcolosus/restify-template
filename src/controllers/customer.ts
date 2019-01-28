@@ -6,15 +6,12 @@ import { path, GET, POST, PUT, DELETE } from "../utils";
 @path('/customers')
 export class CustomerController extends BaseController {
 
-
-
     @GET
     async list(req: Request, res: Response): Promise<void> {
         res.send(await customerService.list());
     }
 
-    @GET
-    @path('/:id')
+    @GET('/:id')
     async getById(req: Request, res: Response): Promise<void> {
         const customer = await customerService.getById(req.params.id);
         res.send(customer ? 200 : 404, customer);
@@ -26,14 +23,12 @@ export class CustomerController extends BaseController {
         res.send(await customerService.save(req.body));
     }
 
-    @PUT
-    @path('/:id')
+    @PUT('/:id')
     async update(req: Request, res: Response): Promise<void> {
         res.send(await customerService.update({ ...req.body, id: +req.params.id }));
     }
 
-    @DELETE
-    @path('/:id')
+    @DELETE('/:id')
     async remove(req: Request, res: Response): Promise<void> {
         try {
             const result = await customerService.delete(req.params.id);
