@@ -1,3 +1,4 @@
+import { User } from './models/User';
 import { UserController } from './controllers/user';
 import { jwtConfiguration } from './server/index';
 import { AuthenticationController } from './controllers/authentication';
@@ -12,7 +13,8 @@ const dbConfig: DatabaseConfiguration = {
   password: process.env.DATABASE_PASSWORD || 'restify',
   host: process.env.DATABASE_HOST || 'localhost',
   port: +process.env.DATABASE_PORT || 5432,
-  ssl: !!process.env.USE_SSL
+  ssl: !!process.env.USE_SSL,
+  entities: [User]
 };
 
 const corsConfig: CorsConfiguration = {
