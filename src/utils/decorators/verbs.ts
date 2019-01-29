@@ -1,8 +1,3 @@
-export type Target = {
-  new (...args: any[]): any;
-  path: string;
-};
-
 export function GET(...args: any) {
   return analyzeDecorator('get', args);
 }

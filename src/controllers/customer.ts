@@ -5,7 +5,7 @@ import { path, GET, POST, PUT, DELETE } from "../utils";
 
 @path('/customers')
 export class CustomerController extends BaseController {
-
+    
     @GET
     async list(req: Request, res: Response): Promise<void> {
         res.send(await customerService.list());
