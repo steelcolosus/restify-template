@@ -36,6 +36,10 @@ export class DatabaseProvider {
             extra: {
                 ssl
             },
+            migrations: ["migration/*.js"],
+            cli: {
+                "migrationsDir": "migration"
+            },
             entities: [Customer],
             synchronize: true // DO NOT USE IN PRODUCTION
         });

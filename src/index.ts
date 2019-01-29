@@ -39,18 +39,16 @@ const corsConfig: CorsConfiguration = {
     'X-Response-Time',
     'X-PINGOTHER',
     'X-CSRF-Token',
-    'Authorization',
+    'Authorization'
   ],
   exposeHeaders: ['Authorization']
 };
 
 new ApiServer.Builder(+process.env.PORT || 8080)
+  .withGlobalPath('/api/v1')
   .withDBConfig(dbConfig)
   .withBodyParser()
   .withQueryParser()
   .withCORS(corsConfig)
-  .withResources(
-    new CustomerController(),
-    new PingController())
+  .withResources(new CustomerController(), new PingController())
   .build();
-

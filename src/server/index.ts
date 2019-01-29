@@ -15,11 +15,11 @@ export enum HttpMethod {
 }
 
 export interface CorsConfiguration {
-  preflightMaxAge?: number, // Optional
-  origins: any[],
-  allowMethods: HttpMethod[],
-  allowHeaders: string[],
-  exposeHeaders: string[]
+  preflightMaxAge?: number; // Optional
+  origins: any[];
+  allowMethods: HttpMethod[];
+  allowHeaders: string[];
+  exposeHeaders: string[];
 }
 
 export class ApiServer {
@@ -32,6 +32,7 @@ export class ApiServer {
   private port: number;
   private dbConfig: DatabaseConfiguration;
   private corsConfig: CorsConfiguration;
+  private globalPath: string;
 
   constructor(build) {
     this.dbConfig = build.dbConfig;
@@ -48,7 +49,7 @@ export class ApiServer {
     if (this.corsConfig) {
       const corsMiddleware = require('restify-cors-middleware');
       const cors = corsMiddleware(this.corsConfig);
-      this.restify.pre(cors.pref)
+      this.restify.pre(cors.pref);
       this.restify.use(cors.actual);
     }
 
@@ -73,9 +74,8 @@ export class ApiServer {
       console.log('you are not using any qjery parser');
     }
 
-
-
     this.controllers = build.controllers;
+    this.globalPath = build.globalPath;
 
     if (this.controllers == undefined || this.controllers.length == 0) {
       console.log('No controllers detected');
@@ -85,8 +85,10 @@ export class ApiServer {
         endpoints.forEach(endpoint => {
           const { http, methodName, methodPath } = endpoint;
           const completePath = path
-            .join(basePath, methodPath || '')
+            .join(this.globalPath || '', basePath, methodPath || '')
             .replace(/\\/g, '/');
+
+          console.log(`Added route ${http.toUpperCase()}: ${completePath}`);
           const endpointMethod = resource[methodName];
           this.addRoute(http, completePath, endpointMethod.bind(resource));
         });
@@ -113,7 +115,6 @@ export class ApiServer {
         res.send(500, e);
       }
     });
-    console.log(`Added route ${method.toUpperCase()}: ${url}`);
   }
 
   static get Builder() {
@@ -126,6 +127,7 @@ export class ApiServer {
       private preHandlers: restify.RequestHandlerType[];
       private dbConfig: DatabaseConfiguration;
       private corsConfig: CorsConfiguration;
+      private globalPath: string;
 
       constructor(port: number) {
         this.port = port;
@@ -159,6 +161,11 @@ export class ApiServer {
 
       withCORS(corsConfig: CorsConfiguration) {
         this.corsConfig = corsConfig;
+        return this;
+      }
+
+      withGlobalPath(path: string) {
+        this.globalPath = path;
         return this;
       }
 
