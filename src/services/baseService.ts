@@ -7,7 +7,7 @@ export abstract class BaseService<T extends BaseEntity> {
     constructor(public clazz: new () => T) {
     }
 
-    private async getRepository() {
+    protected async getRepository() {
         const connection = await DatabaseProvider.getConnection();
         return await connection.getRepository(this.clazz);
     }

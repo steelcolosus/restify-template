@@ -1,5 +1,7 @@
+import { UserController } from './controllers/user';
+import { jwtConfiguration } from './server/index';
+import { AuthenticationController } from './controllers/authentication';
 import { PingController } from './controllers/ping';
-import { CustomerController } from './controllers/customer';
 import { ApiServer, HttpMethod, CorsConfiguration } from './server';
 import { DatabaseConfiguration } from './database';
 
@@ -44,11 +46,20 @@ const corsConfig: CorsConfiguration = {
   exposeHeaders: ['Authorization']
 };
 
+const config = require('./utils/config')
+
+const rjwt = require('restify-jwt-community');
+
+const globalPath = '/api/v1';
+
 new ApiServer.Builder(+process.env.PORT || 8080)
-  .withGlobalPath('/api/v1')
+  .withGlobalPath(globalPath)
   .withDBConfig(dbConfig)
   .withBodyParser()
   .withQueryParser()
   .withCORS(corsConfig)
-  .withResources(new CustomerController(), new PingController())
+  .use(rjwt(config.jwt).unless({
+      path:[globalPath+"/auth"]
+  }))
+  .withResources(new AuthenticationController(),new UserController(), new PingController())
   .build();

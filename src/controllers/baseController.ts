@@ -1,5 +1,6 @@
 import { Request, Response } from 'restify';
 export abstract class BaseController {
+    
   abstract async list(req: Request, res: Response): Promise<void>;
 
   abstract async getById(req: Request, res: Response): Promise<void>;

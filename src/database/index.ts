@@ -1,3 +1,4 @@
+import { User } from './../models/User';
 import { Connection, createConnection } from "typeorm";
 import { Customer } from "../models/customer";
 export interface DatabaseConfiguration {
@@ -40,7 +41,7 @@ export class DatabaseProvider {
             cli: {
                 "migrationsDir": "migration"
             },
-            entities: [Customer],
+            entities: [User],
             synchronize: true // DO NOT USE IN PRODUCTION
         });
 

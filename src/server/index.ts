@@ -22,6 +22,10 @@ export interface CorsConfiguration {
   exposeHeaders: string[];
 }
 
+export interface jwtConfiguration {
+  secret: string;
+}
+
 export class ApiServer {
   private restify: Server;
   private handlers: restify.RequestHandlerType[] = [];
@@ -53,7 +57,7 @@ export class ApiServer {
       this.restify.use(cors.actual);
     }
 
-    if (this.handlers !== undefined && this.preHandlers.length > 0) {
+    if (this.preHandlers !== undefined && this.preHandlers.length > 0) {
       this.restify.pre(...this.preHandlers);
     }
 
@@ -123,8 +127,8 @@ export class ApiServer {
       private bodyParser: boolean;
       private queryParser: boolean;
       private controllers: any[];
-      private handlers: restify.RequestHandlerType[];
-      private preHandlers: restify.RequestHandlerType[];
+      private handlers: restify.RequestHandlerType[] = [];
+      private preHandlers: restify.RequestHandlerType[]=[];
       private dbConfig: DatabaseConfiguration;
       private corsConfig: CorsConfiguration;
       private globalPath: string;
