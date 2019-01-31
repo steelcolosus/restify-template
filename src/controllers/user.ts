@@ -4,7 +4,7 @@ import { Request, Response } from 'restify';
 import { path, GET, POST, PUT, DELETE } from "../utils";
 
 @path('/users')
-export class UserController extends BaseController {
+class UserController extends BaseController {
     
     @GET
     async list(req: Request, res: Response): Promise<void> {
@@ -40,3 +40,5 @@ export class UserController extends BaseController {
         }
     }
 }
+
+export const userController = new UserController();

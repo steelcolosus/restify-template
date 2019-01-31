@@ -1,22 +1,12 @@
-import { User } from './../models/User';
+import { PropertyConfig, DatabaseConfig } from './../config/index';
 import { Connection, createConnection } from "typeorm";
-import { Customer } from "../models/customer";
-export interface DatabaseConfiguration {
-    type: 'postgres';
-    host: string;
-    port: number;
-    username: string;
-    password: string;
-    database: string;
-    ssl?: boolean;
-    entities:any[];
-}
+
 
 export class DatabaseProvider {
     private static connection: Connection;
-    private static configuration: DatabaseConfiguration;
+    private static configuration: DatabaseConfig;
 
-    public static configure(config: DatabaseConfiguration): void {
+    public static configure(config:DatabaseConfig): void {
         if (!config) {
             throw new Error('Parameter config not set.');
         }
