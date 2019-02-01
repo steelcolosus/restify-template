@@ -1,20 +1,12 @@
+import { PropertyConfig, DatabaseConfig } from './../config/index';
 import { Connection, createConnection } from "typeorm";
-import { Customer } from "../models/customer";
-export interface DatabaseConfiguration {
-    type: 'postgres';
-    host: string;
-    port: number;
-    username: string;
-    password: string;
-    database: string;
-    ssl?: boolean;
-}
+
 
 export class DatabaseProvider {
     private static connection: Connection;
-    private static configuration: DatabaseConfiguration;
+    private static configuration: DatabaseConfig;
 
-    public static configure(config: DatabaseConfiguration): void {
+    public static configure(config:DatabaseConfig): void {
         if (!config) {
             throw new Error('Parameter config not set.');
         }
@@ -30,7 +22,7 @@ export class DatabaseProvider {
             throw new Error('DatabaseProvider is not configured yet.')
         }
 
-        const { type, host, port, username, password, database, ssl } = DatabaseProvider.configuration;
+        const { type, host, port, username, password, database, ssl, entities } = DatabaseProvider.configuration;
         DatabaseProvider.connection = await createConnection({
             type, host, port, username, password, database,
             extra: {
@@ -40,7 +32,7 @@ export class DatabaseProvider {
             cli: {
                 "migrationsDir": "migration"
             },
-            entities: [Customer],
+            entities: [... entities],
             synchronize: true // DO NOT USE IN PRODUCTION
         });
 

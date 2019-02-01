@@ -17,16 +17,23 @@
   },
   "homepage": "https://github.com/steelcolosus/restify-template#readme",
   "dependencies": {
+    "@types/dotenv": "^6.1.0",
+    "@types/jsonwebtoken": "^8.3.0",
     "@types/restify": "^7.2.7",
+    "@types/restify-cors-middleware": "^1.0.1",
+    "jsonwebtoken": "^8.4.0",
     "nodemon": "^1.18.9",
     "path": "^0.12.7",
     "pg": "^7.8.0",
     "restify": "^7.6.0",
     "restify-cors-middleware": "^1.1.1",
+    "restify-errors": "^6.1.1",
+    "restify-jwt-community": "^1.0.9",
     "rimraf": "^2.6.3",
     "ts-node": "^8.0.1",
     "typeorm": "^0.2.12",
-    "typescript": "^3.2.4"
+    "typescript": "^3.2.4",
+    "winston": "^3.2.1"
   },
   "devDependencies": {
     "kexec": "^3.0.0"
