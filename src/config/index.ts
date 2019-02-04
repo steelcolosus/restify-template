@@ -1,48 +1,42 @@
+import { ConnectionOptions } from 'typeorm';
+
 export * from './config';
 
 export interface PropertyConfig {
-    app:AppConfig,
-    db:DatabaseConfig,
-    cors:CORSConfig,
-    applicationLogging:LoggingConfig,
-    jwt:JWTConfig
+    app: AppConfig,
+    db: ConnectionOptions,
+    cors: CORSConfig,
+    applicationLogging: LoggingConfig,
+    jwt: JWTConfig
 
 }
 
 export interface AppConfig {
-    name:string,
-    port:number,
-    environment:string,
-    logpath:string,
-    globalPath:string
+    name: string,
+    port: number,
+    environment: string,
+    logpath: string,
+    globalPath: string,
+    appSaltRounds: number
 }
 
-export interface DatabaseConfig{
-    type:  any,
-    database: string,
-    username: string,
-    password: string,
-    host: string,
-    port: number,
-    ssl: boolean,
-    entities:any
-}
 
 export interface CORSConfig {
     preflightMaxAge: number,
-    origins:any [],
-    allowMethods:string [],
+    origins: any[],
+    allowMethods: string[],
     allowHeaders: string[],
-    exposeHeaders:string []
+    exposeHeaders: string[]
 }
 
-export interface LoggingConfig{
+export interface LoggingConfig {
     file: string,
-    level:string,
+    level: string,
     console: boolean
 }
 
-export interface JWTConfig{
-    secret:string
+export interface JWTConfig {
+    secret: string,
+    expiration: string | number
 }
 

@@ -1,12 +1,14 @@
 import { DatabaseProvider } from "../database";
-import { Repository, ObjectLiteral, ObjectType, DeepPartial } from "typeorm";
+import { DeepPartial } from "typeorm";
 import { BaseEntity } from "../models/BaseEntity";
 
 export abstract class BaseService<T extends BaseEntity> {
 
-    constructor(public clazz: new () => T) {
-    }
+    private clazz: (new () => T)
 
+    constructor(clazz: new () => T) {
+        this.clazz = clazz;
+    }
     protected async getRepository() {
         const connection = await DatabaseProvider.getConnection();
         return await connection.getRepository(this.clazz);
@@ -17,10 +19,16 @@ export abstract class BaseService<T extends BaseEntity> {
         return await repository.findOne(id);
     }
 
-    public async save(customer: DeepPartial<T>): Promise<T> {
+    public async save(data: DeepPartial<T>): Promise<T> {
         const repository = await this.getRepository();
-        return await repository.save(customer);
+        return await repository.save(data);
     }
+
+    public async saveAll(...data: DeepPartial<T>[]): Promise<(DeepPartial<T> & T)[]> {
+        const repository = await this.getRepository();
+        return await repository.save(data);
+    }
+
     public async list(): Promise<T[]> {
         const repository = await this.getRepository();
         return await repository.find();
@@ -28,13 +36,31 @@ export abstract class BaseService<T extends BaseEntity> {
 
     public async delete(id: number): Promise<boolean> {
         const repository = await this.getRepository();
-        let customer = await this.getById(id);
-        return await repository.remove(customer) ? true : false;
+        let data = await this.getById(id);
+        return await repository.remove(data) ? true : false;
     }
 
-    public async update(entity: T): Promise<T> {
-        let customer = await this.getById(entity.id);
-        Object.assign(customer, entity);
-        return await this.save(customer as any);
+    public async deleteAll(...data: T[]) {
+        const repository = await this.getRepository();
+        return await repository.remove(data);
+    }
+
+    public async update(entity: T): Promise<DeepPartial<T> | T> {
+        let data = await this.getById(entity.id);
+        Object.assign(data, entity);
+        return await this.save(data as any);
+    }
+
+    public async clean(): Promise<boolean> {
+        const repo = await this.getRepository();
+
+        repo.createQueryBuilder()
+            .delete()
+            .from(this.clazz)
+            .execute();
+
+        const total = await this.list();
+
+        return total.length == 0;
     }
 }
