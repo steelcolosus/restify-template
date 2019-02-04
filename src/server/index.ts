@@ -47,6 +47,11 @@ export class ApiServer {
                 mapParams: false
             })
         );
+        this.restify.on('uncaughtException', (req, res, route, err) => {
+            logger.error(err.stack);
+            res.send(err);
+        });
+
     }
 
     private enableCors() {
