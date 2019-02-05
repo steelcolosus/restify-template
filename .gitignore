@@ -61,4 +61,4 @@ typings/
 .next
 
 #migrations folder
-migrations/scripts*
+src/migrations/scripts/*
