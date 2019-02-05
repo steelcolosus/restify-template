@@ -58,13 +58,28 @@ export class MigrationGenerateCommand implements yargs.CommandModule {
             const sqlInMemory = await connection.driver.createSchemaBuilder().log();
             const upSqls: string[] = [], downSqls: string[] = [];
 
+            /*if (connection.driver instanceof MysqlDriver) {
+                sqlInMemory.upQueries.forEach(query => {
+                    upSqls.push("        await queryRunner.query(\"" + query.replace(new RegExp(`"`, "g"), `\\"`) + "\");");
+                });
+                sqlInMemory.downQueries.forEach(query => {
+                    downSqls.push("        await queryRunner.query(\"" + query.replace(new RegExp(`"`, "g"), `\\"`) + "\");");
+                });
+            } else {
+
+                sqlInMemory.upQueries.forEach(query => {
+                    upSqls.push("        await queryRunner.query(`" + query.replace(new RegExp("`", "g"), "\\`") + "`);");
+                });
+                sqlInMemory.downQueries.forEach(query => {
+                    downSqls.push("        await queryRunner.query(`" + query.replace(new RegExp("`", "g"), "\\`") + "`);");
+                });
+            }*/
             sqlInMemory.upQueries.forEach(query => {
                 upSqls.push("        await queryRunner.query(`" + query.replace(new RegExp("`", "g"), "\\`") + "`);");
             });
             sqlInMemory.downQueries.forEach(query => {
                 downSqls.push("        await queryRunner.query(`" + query.replace(new RegExp("`", "g"), "\\`") + "`);");
             });
-
 
             if (upSqls.length) {
                 if (args.name) {

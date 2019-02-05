@@ -7,6 +7,7 @@
         "start": "nodemon --exec ts-node src/index.ts",
         "fixtures": "ts-node src/fixtures/*.ts",
         "migration:generate": "npx ts-node src/migrations/index.ts migration:generate $*",
+        "migration:revert": "npx ts-node src/migrations/index.ts migration:revert $*",
         "migration:run": "npx ts-node src/migrations/index.ts migration:run $*"
     },
     "repository": {
