@@ -1,9 +1,8 @@
-import { DatabaseProvider } from "../database";
+
 import { BaseService } from "./baseService";
-import { User } from "../models/User";
 import * as bcrypt from 'bcrypt'
-import { PropertyConfig, appPropertyConfig } from "../config";
-import { config } from "dotenv";
+import { User } from "../data/models/User";
+import { PropertyConfig, appPropertyConfig } from "../core/config";
 
 
 export class AuthenticationService extends BaseService<User>{

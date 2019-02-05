@@ -1,7 +1,7 @@
 
 import { Request, Response } from 'restify';
-import { path, GET } from "../utils";
-import { AllowAny } from '../utils/decorators/allowAny';
+import { AllowAny } from '../core/utils/decorators/allowAny';
+import { path, GET } from '../core/utils';
 
 @path('/ping')
 class PingController {

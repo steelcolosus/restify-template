@@ -1,6 +1,6 @@
 import yargs = require("yargs");
-import { MigrationGenerateCommand } from "./migrationGenerateCommand";
-import { MigrationRunCommand } from "./migrationRunCommand";
+import { MigrationGenerateCommand } from "./migrations/migrationGenerateCommand";
+import { MigrationRunCommand } from "./migrations/migrationRunCommand";
 
 yargs.usage("Usage: $0 <command> [options]")
     .command(new MigrationGenerateCommand())

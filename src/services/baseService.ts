@@ -1,6 +1,7 @@
-import { DatabaseProvider } from "../database";
+
 import { DeepPartial } from "typeorm";
-import { BaseEntity } from "../models/BaseEntity";
+import { DatabaseProvider } from "../data/database";
+import { BaseEntity } from "../data/models/BaseEntity";
 
 export abstract class BaseService<T extends BaseEntity> {
 

@@ -2,11 +2,11 @@ import { PropertyConfig } from './../config/index';
 import * as restify from 'restify';
 import { Server } from 'restify';
 import * as path from 'path';
-import { DatabaseProvider } from '../database';
-import { CONTROLLERS } from '../controllers';
 import { jsend, logger } from '../lib';
 import * as corsMiddleware from 'restify-cors-middleware';
-
+import { CONTROLLERS } from '../../controllers';
+import { DatabaseProvider } from '../../data/database';
+const chalk = require("chalk");
 
 export class ApiServer {
     private restify: Server;
@@ -26,7 +26,7 @@ export class ApiServer {
         this.jwtAuthentication();
         this.restify.listen(this.config.app.port, () =>
             logger.info(
-                `${this.config.app.name} Server is running on port - ${this.config.app.port}`
+                `${chalk.yellow(this.config.app.name)} Server is running on port - ${chalk.green(this.config.app.port)}`
             )
         );
     }
@@ -85,14 +85,14 @@ export class ApiServer {
 
         } else {
             controllers.forEach(resource => {
-                logger.info(`Registering controller: ${resource.constructor.name}`)
+                logger.info(chalk.green(`Registering controller: ${chalk.yellow(resource.constructor.name)}`))
                 const { endpoints, basePath, allowed } = resource;
                 endpoints.forEach(endpoint => {
                     const { http, methodName, methodPath } = endpoint;
                     const completePath = path
                         .join(this.config.app.globalPath || '', basePath || '/', methodPath || '')
                         .replace(/\\/g, '/');
-                    logger.info(`\tAdded route ${http.toUpperCase()}: ${completePath}`);
+                    logger.info(chalk.cyan(`\tAdded route ${http.toUpperCase()}: ${completePath}`));
                     const endpointMethod = resource[methodName];
                     this.addRoute(http, completePath, endpointMethod.bind(resource));
 

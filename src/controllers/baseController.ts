@@ -1,5 +1,5 @@
 import { Request, Response } from 'restify';
-import { AllowMethod } from '../utils/decorators/allowAny';
+import { AllowMethod } from '../core/utils/decorators/allowAny';
 export abstract class BaseController {
 
     protected allowed: AllowMethod[] = [];

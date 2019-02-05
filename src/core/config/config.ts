@@ -31,11 +31,11 @@ export const AppPropertyConfig = (): PropertyConfig => {
             host: process.env.DB_HOST || 'localhost',
             port: +process.env.DB_PORT || 5432,
             logging: true,
-            entities: ["src/models/**/*.ts"],
-            migrations: ["src/migrations/scripts/**/*.ts"],
+            entities: ["src/data/models/**/*.ts"],
+            migrations: ["src/data/migrations/scripts/**/*.ts"],
             extra: { ssl: false },
             cli: {
-                "migrationsDir": "src/migrations/scripts"
+                "migrationsDir": "src/data/migrations/scripts"
             },
             synchronize: true // DO NOT USE IN PRODUCTION,
         },

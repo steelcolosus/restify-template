@@ -6,7 +6,6 @@ const {
     combine,
     timestamp,
     label,
-    prettyPrint,
     colorize,
     align,
     printf

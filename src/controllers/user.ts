@@ -1,11 +1,11 @@
 import { userService } from './../services/users';
 import { BaseController } from './baseController';
 import { Request, Response } from 'restify';
-import { path, GET, POST, PUT, DELETE } from "../utils";
+import { path, GET, POST, PUT, DELETE } from '../core/utils';
 
 @path('/users')
 class UserController extends BaseController {
-    
+
     @GET
     async list(req: Request, res: Response): Promise<void> {
         res.send(await userService.list());

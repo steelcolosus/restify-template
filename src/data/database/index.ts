@@ -1,6 +1,5 @@
 import { Connection, createConnection, ConnectionOptions } from "typeorm";
-import { logger } from '../lib';
-
+import { logger } from "../../core/lib";
 
 export class DatabaseProvider {
     private static connection: Connection;

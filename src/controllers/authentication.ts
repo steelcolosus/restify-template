@@ -1,9 +1,8 @@
 import { Request, Response } from 'restify';
-import { POST } from '../utils';
 import { AuthenticationService, authService } from '../services/authentication';
-import { appPropertyConfig, PropertyConfig } from '../config';
-import { AllowAny } from '../utils/decorators/allowAny';
-
+import { PropertyConfig, appPropertyConfig } from '../core/config';
+import { AllowAny } from '../core/utils/decorators/allowAny';
+import { POST } from '../core/utils';
 
 class AuthenticationController {
     jwt = require('jsonwebtoken');

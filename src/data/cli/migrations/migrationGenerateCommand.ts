@@ -1,7 +1,7 @@
-import { appPropertyConfig } from "../config";
 import { Connection, createConnection } from "typeorm";
-import { CommandUtils } from "./commandUtils";
+import { CommandUtils } from "../commandUtils";
 import yargs = require("yargs");
+import { appPropertyConfig } from "../../../core/config";
 const chalk = require("chalk");
 
 

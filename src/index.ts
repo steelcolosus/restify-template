@@ -1,5 +1,5 @@
+import { ApiServer } from "./core/server";
+import { appPropertyConfig } from "./core/config";
 
-import { ApiServer } from './server';
-import { appPropertyConfig} from './config/config';
 
 new ApiServer(appPropertyConfig);
