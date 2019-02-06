@@ -1,6 +1,6 @@
 version: '3'
 services:
-    db:
+    db_prod:
       container_name: postgres
       image: postgres
       restart: always
@@ -15,9 +15,22 @@ services:
       container_name: pgadmin
       image: dpage/pgadmin4
       depends_on: 
-        - db
+        - db_prod
       ports:
         - "80:80"
       environment:
         - PGADMIN_DEFAULT_EMAIL=user@domain.com
         - PGADMIN_DEFAULT_PASSWORD=SuperSecret
+    api:
+      container_name: rest-api
+      build: .
+      restart: always
+      command: sh entrypoint.sh
+      environment: 
+        NODE_ENV: production
+      ports:
+        - "8080:8080"
+      depends_on: 
+        - db_prod
+      volumes:
+        - ./logs:/docker_api/logs

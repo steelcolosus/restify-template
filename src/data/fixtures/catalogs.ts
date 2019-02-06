@@ -10,9 +10,9 @@ import { authService } from "../../services/authentication";
 
 async function loadFixtures() {
 
-    DatabaseProvider.configure(appPropertyConfig.db);
-    await registerFakeUsers();
-    await DatabaseProvider.clean();
+    //DatabaseProvider.configure(appPropertyConfig.db);
+    //await registerFakeUsers();
+    //await DatabaseProvider.clean();
 
 }
 

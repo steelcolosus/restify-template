@@ -40,7 +40,7 @@ class AuthenticationController {
 
         if (user) {
             const { id, firstName, lastName, username } = user;
-            res.send({ id, name, username })
+            res.send({ id, firstName, lastName, username })
         } else {
             res.send(403, `User ${req.body.username} already exists`)
         }

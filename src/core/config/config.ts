@@ -4,7 +4,24 @@ import * as dotenv from 'dotenv';
 
 const EnvConfigLoader = (): PropertyConfig => {
     console.log('reading dot env file');
-    const result = dotenv.config();
+    let path;
+
+    console.log(process.env.NODE_ENV);
+    switch (process.env.NODE_ENV) {
+        case "test":
+            console.log('loading test env file');
+            path = `${process.cwd()}/.env.test`;
+            break;
+        case "production":
+            console.log('loading production env file');
+            path = `${process.cwd()}/.env.production`;
+            break;
+        default:
+            console.log('loading development env file');
+            path = `${process.cwd()}/.env.dev`;
+    }
+
+    const result = dotenv.config({ path: path });
     if (result.error) {
         throw result.error;
     }
@@ -19,25 +36,33 @@ export const AppPropertyConfig = (): PropertyConfig => {
             port: +process.env.APP_PORT || 8080,
             environment: process.env.APPLICATION_ENV,
             logpath: process.env.LOG_PATH,
-            globalPath: '/api/v1',
+            globalPath: process.env.APP_GLOBAL_PATH,
             appSaltRounds: +process.env.APP_SALT_ROUNDS || 10
         },
         db: {
-            name: 'default',
-            type: 'postgres',
+
+            name: process.env.DB_CONNECTION,
+            type: process.env.DB_TYPE as any,
             database: process.env.DB_NAME,
             username: process.env.DB_USERNAME,
             password: process.env.DB_PASSWORD,
             host: process.env.DB_HOST || 'localhost',
-            port: +process.env.DB_PORT || 5432,
-            logging: true,
+            port: +process.env.DB_PORT || 1433,
+            logging: !!process.env.DB_LOGGING || false,
             entities: ["src/data/models/**/*.ts"],
             migrations: ["src/data/migrations/scripts/**/*.ts"],
-            extra: { ssl: false },
+            extra: {
+                ssl: false,
+                trustedConnection: true
+            },
+            options: {
+                useUTC: true,
+                trustedConnection: true
+            },
             cli: {
                 "migrationsDir": "src/data/migrations/scripts"
             },
-            synchronize: true // DO NOT USE IN PRODUCTION,
+            synchronize: !!process.env.DB_SYNCHRONIZE || false// DO NOT USE IN PRODUCTION,
         },
         cors: {
             preflightMaxAge: 5,

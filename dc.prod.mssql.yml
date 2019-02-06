@@ -1,0 +1,24 @@
+version: '3'
+services:
+  db_prod:
+    container_name: mssql
+    image: microsoft/mssql-server-linux:2017-latest
+    environment:
+      - SA_PASSWORD=Pass@word
+      - ACCEPT_EULA=Y
+    ports:
+      - "1433:1433"
+
+  api:
+    container_name: rest-api
+    build: .
+    restart: always
+    command: sh entrypoint.sh
+    environment: 
+      NODE_ENV: production
+    ports:
+      - "8080:8080"
+    depends_on: 
+      - db_prod
+    volumes:
+      - ./logs:/docker_api/logs
