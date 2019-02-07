@@ -50,7 +50,7 @@ export const AppPropertyConfig = (): PropertyConfig => {
             port: +process.env.DB_PORT || 1433,
             logging: !!process.env.DB_LOGGING || false,
             entities: ["src/data/models/**/*.ts"],
-            migrations: ["src/data/migrations/scripts/**/*.ts"],
+            migrations: ["src/data/migrations/**/*.ts"],
             extra: {
                 ssl: false,
                 trustedConnection: true
@@ -60,7 +60,7 @@ export const AppPropertyConfig = (): PropertyConfig => {
                 trustedConnection: true
             },
             cli: {
-                "migrationsDir": "src/data/migrations/scripts"
+                "migrationsDir": "src/data/migrations/"
             },
             synchronize: !!process.env.DB_SYNCHRONIZE || false// DO NOT USE IN PRODUCTION,
         },

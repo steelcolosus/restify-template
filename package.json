@@ -6,6 +6,7 @@
     "scripts": {
         "start": "nodemon --exec ts-node src/index.ts",
         "fixtures": "ts-node src/data/fixtures/*.ts",
+        "migration:create": "npx ts-node src/data/cli/cli.ts migration:create $*",
         "migration:generate": "npx ts-node src/data/cli/cli.ts migration:generate $*",
         "migration:revert": "npx ts-node src/data/cli/cli.ts migration:revert $*",
         "migration:run": "npx ts-node src/data/cli/cli.ts migration:run $*"
