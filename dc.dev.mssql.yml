@@ -1,14 +1,18 @@
-version: '3'
+version: '3.3'
 services:
   db:
     container_name: mssql
-    image: microsoft/mssql-server-linux:2017-latest
+    build: 
+      context: ./mssql_init/
+      dockerfile: Dockerfile
+    ports:
+      - "1433:1433"
     environment:
       - SA_PASSWORD=Pass@word
       - ACCEPT_EULA=Y
-    ports:
-      - "1433:1433"
-
-
+      - MSSQL_DB=database
+      - MSSQL_USER=user
+      - MSSQL_PASSWORD=vkKRP4PLBT1@2a
+  
 
 

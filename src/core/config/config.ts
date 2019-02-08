@@ -40,7 +40,6 @@ export const AppPropertyConfig = (): PropertyConfig => {
             appSaltRounds: +process.env.APP_SALT_ROUNDS || 10
         },
         db: {
-
             name: process.env.DB_CONNECTION,
             type: process.env.DB_TYPE as any,
             database: process.env.DB_NAME,

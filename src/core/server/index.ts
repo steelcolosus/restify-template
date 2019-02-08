@@ -6,11 +6,10 @@ import { jsend, logger } from '../lib';
 import * as corsMiddleware from 'restify-cors-middleware';
 import { CONTROLLERS } from '../../controllers';
 import { DatabaseProvider } from '../../data/database';
-const chalk = require("chalk");
+import * as rjwt from 'restify-jwt-community';
 
 export class ApiServer {
     private restify: Server;
-    private allowedRoutes: string[] = [];
 
     constructor(public config: PropertyConfig) {
         this.restify = restify.createServer({
@@ -23,12 +22,26 @@ export class ApiServer {
         this.basicServerConfig();
         this.enableCors();
         this.registerResources(...CONTROLLERS)
+        //this.serveStaticContent('./src/public/images', '/images');
         this.jwtAuthentication();
+
         this.restify.listen(this.config.app.port, () =>
             logger.info(
-                `${chalk.yellow(this.config.app.name)} Server is running on port - ${chalk.green(this.config.app.port)}`
+                `${this.config.app.name} Server is running on port - ${this.config.app.port}`
             )
         );
+    }
+
+    private serveStaticContent(directory, endpoint) {
+        const completePath = path
+            .join(this.config.app.globalPath || '', endpoint)
+            .replace(/\\/g, '/');
+        logger.info(`Registering static resources`);
+        logger.info(`\tAdded route GET: ${completePath}`);
+        this.addRoute('get', completePath + '/*', restify.plugins.serveStatic({
+            directory: directory,
+            appendRequestPath: false
+        }));
     }
 
     private initDB() {
@@ -47,11 +60,6 @@ export class ApiServer {
                 mapParams: false
             })
         );
-        this.restify.on('uncaughtException', (req, res, route, err) => {
-            logger.error(err.stack);
-            res.send(err);
-        });
-
     }
 
     private enableCors() {
@@ -66,14 +74,10 @@ export class ApiServer {
 
     private jwtAuthentication() {
         if (this.config.jwt) {
-            const rjwt = require('restify-jwt-community');
-            this.restify.use(
-                rjwt(this.config.jwt).unless({
-                    path: this.allowedRoutes ? this.allowedRoutes : []
-                })
-            );
+            return true;
         } else {
             logger.error('no JWT configuration found')
+            return false;
         }
     }
 
@@ -85,22 +89,47 @@ export class ApiServer {
 
         } else {
             controllers.forEach(resource => {
-                logger.info(chalk.green(`Registering controller: ${chalk.yellow(resource.constructor.name)}`))
-                const { endpoints, basePath, allowed } = resource;
+
+
+
+                const { endpoints, basePath, allowed, secure } = resource;
+
+                if (secure) {
+                    if (this.jwtAuthentication()) {
+                        logger.info(`Registering controller: ${resource.constructor.name} [Authenticated]`)
+                    } else {
+                        logger.error('You need to configure JWT token before authenticate your controller')
+                    }
+
+                } else {
+                    logger.info(`Registering controller: ${resource.constructor.name}`)
+                }
+
                 endpoints.forEach(endpoint => {
+
                     const { http, methodName, methodPath } = endpoint;
+
                     const completePath = path
                         .join(this.config.app.globalPath || '', basePath || '/', methodPath || '')
                         .replace(/\\/g, '/');
-                    logger.info(chalk.cyan(`\tAdded route ${http.toUpperCase()}: ${completePath}`));
-                    const endpointMethod = resource[methodName];
-                    this.addRoute(http, completePath, endpointMethod.bind(resource));
 
-                    if (allowed) {
-                        const allowedMethod = allowed.find(x => x.methodName == methodName);
-                        if (allowedMethod && allowedMethod.allow) {
-                            this.allowedRoutes.push(completePath);
+                    const endpointMethod = resource[methodName];
+
+                    if (secure && this.jwtAuthentication()) {
+                        if (allowed && allowed.length > 0) {
+                            const allowedMethod = allowed.find(x => x.methodName == methodName);
+                            if (allowedMethod && allowedMethod.allow) {
+                                logger.info(`\tAdded route ${http.toUpperCase()}: ${completePath} [not secured]`);
+                                this.addRoute(http, completePath, endpointMethod.bind(resource));
+                            }
+                        } else {
+                            logger.info(`\tAdded route ${http.toUpperCase()}: ${completePath} [secured]`);
+                            this.addRoute(http, completePath, endpointMethod.bind(resource), rjwt(this.config.jwt));
+
                         }
+                    } else {
+                        logger.info(`\tAdded route ${http.toUpperCase()}: ${completePath}`);
+                        this.addRoute(http, completePath, endpointMethod.bind(resource));
                     }
 
                 });
@@ -111,15 +140,28 @@ export class ApiServer {
     private addRoute(
         method: 'get' | 'post' | 'put' | 'del',
         url: string,
-        requestHandler: restify.RequestHandler
+        requestHandler: restify.RequestHandler,
+        ...extraHandlers: restify.RequestHandler[]
     ): void {
-        this.restify[method](url, async (req, res, next) => {
-            try {
-                await requestHandler(req, res, next);
-            } catch (e) {
-                logger.error(e);
-                res.send(500, e);
-            }
-        });
+        if (extraHandlers && extraHandlers.length > 0) {
+            this.restify[method](url, ...extraHandlers, async (req, res, next) => {
+                try {
+                    await requestHandler(req, res, next);
+                } catch (e) {
+                    logger.error(e);
+                    res.send(500, e);
+                }
+            });
+        } else {
+            this.restify[method](url, async (req, res, next) => {
+                try {
+                    await requestHandler(req, res, next);
+                } catch (e) {
+                    logger.error(e);
+                    res.send(500, e);
+                }
+            });
+        }
+
     }
 }

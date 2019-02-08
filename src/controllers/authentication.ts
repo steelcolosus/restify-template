@@ -1,8 +1,7 @@
 import { Request, Response } from 'restify';
 import { AuthenticationService, authService } from '../services/authentication';
 import { PropertyConfig, appPropertyConfig } from '../core/config';
-import { AllowAny } from '../core/utils/decorators/allowAny';
-import { POST } from '../core/utils';
+import { POST } from '../core/decorators';
 
 class AuthenticationController {
     jwt = require('jsonwebtoken');
@@ -12,7 +11,7 @@ class AuthenticationController {
         public service: AuthenticationService
     ) { }
 
-    @AllowAny()
+
     @POST('/auth')
     async authenticate(req: Request, res: Response): Promise<void> {
 
@@ -33,7 +32,7 @@ class AuthenticationController {
         }
     }
 
-    @AllowAny()
+
     @POST('/register')
     async register(req: Request, res: Response): Promise<void> {
         const user = await this.service.register(req.body)

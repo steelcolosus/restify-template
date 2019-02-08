@@ -1,9 +1,11 @@
 import { userService } from './../services/users';
 import { BaseController } from './baseController';
 import { Request, Response } from 'restify';
-import { path, GET, POST, PUT, DELETE } from '../core/utils';
+import { path, GET, POST, PUT, DELETE } from '../core/decorators';
+import { Authenticate } from '../core/decorators/authenticate';
 
 @path('/users')
+@Authenticate
 class UserController extends BaseController {
 
     @GET
