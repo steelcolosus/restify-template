@@ -18,14 +18,15 @@ export class ApiServer {
                 'application/json': jsend
             }
         });
-        
+
         this.initDB();
         this.basicServerConfig();
         this.enableCors();
+
         this.registerResources(...CONTROLLERS)
 
         //this.serveStaticContent('.' + this.config.app.staticSourcesDir, '/images');
-        
+
 
         this.restify.listen(this.config.app.port, () =>
             logger.info(
