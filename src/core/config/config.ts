@@ -37,7 +37,8 @@ export const AppPropertyConfig = (): PropertyConfig => {
             environment: process.env.APPLICATION_ENV,
             logpath: process.env.LOG_PATH,
             globalPath: process.env.APP_GLOBAL_PATH,
-            appSaltRounds: +process.env.APP_SALT_ROUNDS || 10
+            appSaltRounds: +process.env.APP_SALT_ROUNDS || 10,
+            staticSourcesDir: process.env.APP_STATIC_SRC_DIR || '/src/public/images'
         },
         db: {
             name: process.env.DB_CONNECTION,

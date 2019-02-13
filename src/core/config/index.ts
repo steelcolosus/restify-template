@@ -17,7 +17,8 @@ export interface AppConfig {
     environment: string,
     logpath: string,
     globalPath: string,
-    appSaltRounds: number
+    appSaltRounds: number,
+    staticSourcesDir: string
 }
 
 

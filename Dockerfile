@@ -33,5 +33,5 @@ RUN yarn
 COPY . /docker_api
 
 ENV NODE_ENV=production
-RUN chmod -x ./wait-for-it.sh
-RUN chmod -x ./entrypoint.sh
+RUN chmod +x ./wait-for-it.sh
+RUN chmod +x ./entrypoint.sh

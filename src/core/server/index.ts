@@ -5,7 +5,7 @@ import * as path from 'path';
 import { jsend, logger } from '../lib';
 import * as corsMiddleware from 'restify-cors-middleware';
 import { CONTROLLERS } from '../../controllers';
-import { DatabaseProvider } from '../../data/database';
+import { DatabaseProvider } from '../../core/database';
 import * as rjwt from 'restify-jwt-community';
 
 export class ApiServer {
@@ -18,12 +18,14 @@ export class ApiServer {
                 'application/json': jsend
             }
         });
+        
         this.initDB();
         this.basicServerConfig();
         this.enableCors();
         this.registerResources(...CONTROLLERS)
-        //this.serveStaticContent('./src/public/images', '/images');
-        this.jwtAuthentication();
+
+        //this.serveStaticContent('.' + this.config.app.staticSourcesDir, '/images');
+        
 
         this.restify.listen(this.config.app.port, () =>
             logger.info(
@@ -90,21 +92,16 @@ export class ApiServer {
         } else {
             controllers.forEach(resource => {
 
-
-
                 const { endpoints, basePath, allowed, secure } = resource;
-
                 if (secure) {
                     if (this.jwtAuthentication()) {
                         logger.info(`Registering controller: ${resource.constructor.name} [Authenticated]`)
                     } else {
                         logger.error('You need to configure JWT token before authenticate your controller')
                     }
-
                 } else {
                     logger.info(`Registering controller: ${resource.constructor.name}`)
                 }
-
                 endpoints.forEach(endpoint => {
 
                     const { http, methodName, methodPath } = endpoint;
